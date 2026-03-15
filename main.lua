@@ -7,7 +7,6 @@ local Stats = game:GetService("Stats")
 local LocalPlayer = Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 
--- [ НАСТРОЙКИ ] --
 getgenv().WallhackEnabled = false
 getgenv().ShowNames = false
 getgenv().ShowHealth = false
@@ -16,21 +15,18 @@ getgenv().BHopEnabled = false
 getgenv().WatermarkEnabled = true
 getgenv().HitboxSize = 3.0 
 getgenv().AccentColor = Color3.fromRGB(0, 180, 255)
-getgenv().SliderDragging = false -- Флаг для блокировки перетаскивания меню
+getgenv().SliderDragging = false
 
--- [ ЭФФЕКТ РАЗМЫТИЯ ] --
 local Blur = Lighting:FindFirstChild("NL_Blur") or Instance.new("BlurEffect")
 Blur.Name = "NL_Blur"; Blur.Parent = Lighting; Blur.Size = 0; Blur.Enabled = true
 
 if CoreGui:FindFirstChild("NL_ANIM_TOGGLES") then CoreGui:FindFirstChild("NL_ANIM_TOGGLES"):Destroy() end
 local ScreenGui = Instance.new("ScreenGui", CoreGui); ScreenGui.Name = "NL_ANIM_TOGGLES"
 
--- [ WATERMARK SYSTEM + AUTO-SIZE ] --
 local Watermark = Instance.new("Frame", ScreenGui)
 Watermark.Name = "Watermark"
--- AutomaticSize позволяет рамке сжиматься под контент
 Watermark.AutomaticSize = Enum.AutomaticSize.XY
-Watermark.Size = UDim2.new(0, 0, 0, 25) -- Базовая высота, ширина автоматическая
+Watermark.Size = UDim2.new(0, 0, 0, 25)
 Watermark.Position = UDim2.new(0, 20, 0, 20)
 Watermark.BackgroundColor3 = Color3.fromRGB(8, 10, 15)
 Watermark.BorderSizePixel = 0
@@ -42,7 +38,6 @@ local WM_Stroke = Instance.new("UIStroke", Watermark)
 WM_Stroke.Color = Color3.fromRGB(40, 40, 45)
 WM_Stroke.Thickness = 1
 
--- UIListLayout и UIPadding для правильного авто-размера
 local WM_Layout = Instance.new("UIListLayout", Watermark)
 WM_Layout.FillDirection = Enum.FillDirection.Horizontal
 WM_Layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
@@ -51,10 +46,9 @@ WM_Layout.Padding = UDim.new(0, 0)
 
 local WM_Padding = Instance.new("UIPadding", Watermark)
 WM_Padding.PaddingLeft = UDim.new(0, 10)
-WM_Padding.PaddingRight = UDim.new(0, 10) -- Одинаковые отступы слева и справа
+WM_Padding.PaddingRight = UDim.new(0, 10)
 
 local WM_Text = Instance.new("TextLabel", Watermark)
--- TextLabel тоже подстраивается под текст
 WM_Text.AutomaticSize = Enum.AutomaticSize.XY
 WM_Text.Size = UDim2.new(0, 0, 0, 0)
 WM_Text.BackgroundTransparency = 1
@@ -96,7 +90,6 @@ RunService.RenderStepped:Connect(function(dt)
     if getgenv().WatermarkEnabled then
         local fps = math.floor(1/dt)
         local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
-        -- Обновляем текст, рамка изменится сама
         WM_Text.Text = string.format("neverlose<font color='#%s'>.cc</font>  |  %d fps  |  %d ms", getgenv().AccentColor:ToHex(), fps, ping)
         Watermark.Visible = true
     else
@@ -104,7 +97,6 @@ RunService.RenderStepped:Connect(function(dt)
     end
 end)
 
--- [ UI STRUCTURE ] --
 local MainCanvas = Instance.new("CanvasGroup", ScreenGui)
 MainCanvas.Size = UDim2.new(0, 520, 0, 400); MainCanvas.AnchorPoint = Vector2.new(0.5, 0.5); MainCanvas.Position = UDim2.new(0.5, 0, 0.5, 0); MainCanvas.BackgroundColor3 = Color3.fromRGB(8, 10, 15); MainCanvas.GroupTransparency = 1; MainCanvas.Visible = false; MainCanvas.BorderSizePixel = 0; Instance.new("UICorner", MainCanvas)
 
@@ -134,7 +126,6 @@ local function ToggleMenu()
     task.wait(0.1); isAnimating = false
 end
 
--- [ SIDEBAR ] --
 local Sidebar = Instance.new("Frame", MainFrame); Sidebar.Size = UDim2.new(0, 140, 1, 0); Sidebar.BackgroundColor3 = Color3.fromRGB(12, 14, 22); Sidebar.BorderSizePixel = 0; Instance.new("UICorner", Sidebar)
 local Logo = Instance.new("TextLabel", Sidebar); Logo.RichText = true; Logo.Text = "neverlose<font color='#00b4ff'>.cc</font>"; Logo.Size = UDim2.new(1, 0, 0, 45); Logo.Position = UDim2.new(0, 0, 0, 10); Logo.BackgroundTransparency = 1; Logo.TextColor3 = Color3.new(1,1,1); Logo.Font = Enum.Font.GothamBold; Logo.TextSize = 20
 local Author = Instance.new("TextLabel", Sidebar); Author.Text = "by @s1lnt"; Author.Size = UDim2.new(1, -20, 0, 20); Author.Position = UDim2.new(0, 15, 0, 42); Author.BackgroundTransparency = 1; Author.TextColor3 = Color3.fromRGB(150, 150, 150); Author.Font = Enum.Font.GothamMedium; Author.TextSize = 10; Author.TextXAlignment = Enum.TextXAlignment.Left
@@ -147,7 +138,6 @@ local function CreatePage(n)
 end
 local CombatPage = CreatePage("Combat"); local VisualsPage = CreatePage("Visuals"); local MiscPage = CreatePage("Misc"); local MenuPage = CreatePage("Menu")
 
--- [ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ ] --
 local TogglesList = {}
 local function CreateToggle(parent, text, callback)
     local Container = Instance.new("Frame", parent); Container.Size = UDim2.new(1, -10, 0, 35); Container.BackgroundColor3 = Color3.fromRGB(15, 17, 26); Instance.new("UICorner", Container)
@@ -187,7 +177,7 @@ local function CreateSlider(parent, text, min, max, default, callback)
     SliderPart.InputBegan:Connect(function(i) 
         if i.UserInputType == Enum.UserInputType.MouseButton1 then 
             dragging = true 
-            getgenv().SliderDragging = true -- БЛОКИРУЕМ МЕНЮ
+            getgenv().SliderDragging = true
             Move() 
         end 
     end)
@@ -195,7 +185,7 @@ local function CreateSlider(parent, text, min, max, default, callback)
     UserInputService.InputEnded:Connect(function(i) 
         if i.UserInputType == Enum.UserInputType.MouseButton1 then 
             dragging = false 
-            getgenv().SliderDragging = false -- РАЗБЛОКИРУЕМ МЕНЮ
+            getgenv().SliderDragging = false
         end 
     end)
     
@@ -208,7 +198,6 @@ local function CreateSlider(parent, text, min, max, default, callback)
     return {Fill = Fill, Val = Val}
 end
 
--- [ КОНТЕНТ СТРАНИЦ ] --
 CreateToggle(CombatPage, "Enable Hitbox", function(s) getgenv().HitboxEnabled = s end)
 local HB_Slider = CreateSlider(CombatPage, "Hitbox Size", 1.0, 3.0, 2.0, function(v) getgenv().HitboxSize = v end)
 
@@ -223,12 +212,10 @@ CreateToggle(VisualsPage, "Show Names", function(s) getgenv().ShowNames = s end)
 CreateToggle(VisualsPage, "Show Health", function(s) getgenv().ShowHealth = s end)
 CreateToggle(MiscPage, "BunnyHop", function(s) getgenv().BHopEnabled = s end)
 
--- [ MENU PAGE ] --
 local WM_Tog = CreateToggle(MenuPage, "Enable Watermark", function(s) getgenv().WatermarkEnabled = s end)
 WM_Tog.Update(true)
 
 local function CreateCol(c, n)
-    -- Уменьшен размер кнопок цветов (высота 30 вместо 35, текст 13 вместо 14)
     local b = Instance.new("TextButton", MenuPage); b.Size = UDim2.new(1, -10, 0, 30); b.BackgroundColor3 = Color3.fromRGB(20, 23, 33); b.Text = n; b.TextColor3 = c; b.Font = Enum.Font.GothamMedium; b.TextSize = 13; Instance.new("UICorner", b)
     b.MouseButton1Click:Connect(function() 
         getgenv().AccentColor = c; TabInd.BackgroundColor3 = c; Logo.Text = "neverlose<font color='#"..c:ToHex().."'>.cc</font>"
@@ -246,7 +233,6 @@ AddSocialLink("Discord: _s1lnt", Color3.fromRGB(114, 137, 218))
 AddSocialLink("Tg: t.me/archiv33d", Color3.fromRGB(0, 136, 204))
 AddSocialLink("Github: github.com/sylent345", Color3.fromRGB(200, 200, 200))
 
--- [ ТАБЫ ] --
 local TabButtons = {}
 local function CreateTab(n, y)
     local Container = Instance.new("Frame", Sidebar); Container.Size = UDim2.new(1, -10, 0, 35); Container.Position = UDim2.new(0, 5, 0, y); Container.BackgroundTransparency = 1; Instance.new("UICorner", Container)
@@ -265,7 +251,6 @@ end
 CreateTab("Combat", 75); CreateTab("Visuals", 115); CreateTab("Misc", 155); CreateTab("Menu", 195)
 CombatPage.Visible = true; TabButtons["Combat"].Btn.TextColor3 = Color3.new(1,1,1)
 
--- [ ЛОГИКА ESP И ХИТБОКСОВ ] --
 local function UpdateESP(p)
     local char = p.Character; local root = char and char:FindFirstChild("HumanoidRootPart"); local hum = char and char:FindFirstChild("Humanoid")
     if not getgenv().WallhackEnabled then if root then for _, o in pairs(root:GetChildren()) do if o.Name:find("NL_") then o:Destroy() end end end return end
@@ -312,10 +297,8 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- [ MAIN MENU DRAG SYSTEM ] --
 local dragging, dragInput, dragStart, startPos
 MainCanvas.InputBegan:Connect(function(input)
-    -- Проверка: если мы крутим слайдер, меню НЕ двигается
     if input.UserInputType == Enum.UserInputType.MouseButton1 and not getgenv().SliderDragging then 
         dragging = true; dragStart = input.Position; startPos = MainCanvas.Position 
     end
